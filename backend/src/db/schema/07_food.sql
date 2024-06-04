@@ -1,0 +1,4 @@
+CREATE TABLE foods (
+    food_id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL
+);
