@@ -29,5 +29,22 @@
       </div>
     </main>
     <script src="../src/js/index.js"></script>
+
+    <div id="data"></div>
+    <script>
+      async function fetchData() {
+        try {
+          const response = await fetch(
+            "http://localhost:5000/api/entry_categories"
+          );
+          const data = await response.json();
+          const dataDiv = document.getElementById("data");
+          dataDiv.innerHTML = JSON.stringify(data, null, 2);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      }
+      fetchData();
+    </script>
   </body>
 </html>
