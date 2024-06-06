@@ -1,36 +1,36 @@
 // index.js
+async function fetchSleepQualityData() {
+        try {
+          const response = await fetch(
+            "http://localhost:3000/api/sleep_quality"
+          );
+          const data = await response.json();
+          renderSleepQuality(data);
+        } catch (error) {
+          console.error("Error fetching sleep quality data:", error);
+        }
+      }
 
-async function fetchData() {
-    try {
-        const response = await fetch("http://localhost:3000/api/daily_entry");
-        const data = await response.json();
-        const entriesContainer = document.getElementById("entries-container");
+      function renderSleepQuality(data) {
+        const sleepQualityContainer = document.getElementById(
+          "sleepQualityContainer"
+        );
+        data.forEach((sleepQuality) => {
+          const sleepQualityDiv = document.createElement("div");
 
-        data.forEach(entry => {
-            const entryDiv = document.createElement("div");
+          // Create an image element for the icon
+          const iconImg = document.createElement("img");
+          iconImg.src = `/Users/ina/Desktop/lighthouse/final/backend/src/public/images/${sleepQuality.icon}`;
+          iconImg.alt = sleepQuality.sleep_quality_name;
+          sleepQualityDiv.appendChild(iconImg);
 
-            // Display the journal entry text
-            const entryText = document.createElement("p");
-            entryText.textContent = entry.journal_entry;
-            entryDiv.appendChild(entryText);
+          // Display the sleep quality name
+          const sleepQualityName = document.createElement("p");
+          sleepQualityName.textContent = sleepQuality.sleep_quality_name;
+          sleepQualityDiv.appendChild(sleepQualityName);
 
-            // Display photos if available
-            entry.photo_url.forEach(url => {
-                const img = document.createElement("img");
-                img.src = url;
-                img.alt = "Photo";
-                entryDiv.appendChild(img);
-            });
-
-            // Add a horizontal line to separate entries
-            const hr = document.createElement("hr");
-            entryDiv.appendChild(hr);
-
-            entriesContainer.appendChild(entryDiv);
+          sleepQualityContainer.appendChild(sleepQualityDiv);
         });
-    } catch (error) {
-        console.error("Error fetching data:", error);
-    }
-}
+      }
 
-fetchData();
+      fetchSleepQualityData();
