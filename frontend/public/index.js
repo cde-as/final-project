@@ -64,12 +64,12 @@ async function fetchEmotionData() {
   try {
     const response = await fetch("http://localhost:3000/api/emotion");
     const data = await response.json();
-    renderActivities(data);
+    renderEmotion(data);
     } catch (error) {
       console.error("Error fetching emotion data:", error);
     }
    }
-   function renderActivities(data) {
+   function renderEmotion(data) {
     const emotionContainer = document.getElementById("emotionContainer");
       data.forEach(emotion => {
         const emotionDiv = document.createElement("div");

@@ -31,3 +31,33 @@ main {
   margin-bottom: 1em;
   padding: 1em;
 }
+
+#emotionContainer {
+  display: inline-flex;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#emotionContainer img {
+  width: 50%;
+}
+
+#activitiesContainer {
+  display: inline-flex;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#activitiesContainer img {
+  width: 50%;
+}
+
+#sleepQualityContainer {
+  display: inline-flex;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#sleepQualityContainer img{
+  width: 50%;
+}
