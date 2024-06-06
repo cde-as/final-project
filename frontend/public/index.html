@@ -35,7 +35,7 @@
       async function fetchData() {
         try {
           const response = await fetch(
-            "http://localhost:5000/api/entry_categories"
+            "http://localhost:3000/api/entry_categories"
           );
           const data = await response.json();
           const dataDiv = document.getElementById("data");
