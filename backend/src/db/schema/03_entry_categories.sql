@@ -1,3 +1,5 @@
+-- Create this table last
+
 CREATE TABLE entry_categories (
     entry_categories_id SERIAL PRIMARY KEY,
     daily_entry_id INTEGER REFERENCES daily_entry(entry_id),

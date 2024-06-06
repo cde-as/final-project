@@ -29,9 +29,9 @@ pool.query('SELECT NOW()', (err, res) => {
 });
 
 // Example route
-app.get('/api/entry_categories', async (req, res) => {
+app.get('/api/sleep_quality', async (req, res) => {
     try {
-        const result = await pool.query('SELECT * FROM entry_categories');
+        const result = await pool.query('SELECT * FROM sleep_quality');
         res.json(result.rows);
     } catch (err) {
         console.error(err.message);

@@ -1,10 +1,10 @@
 -- Seed data for the Mood table
 
 INSERT INTO Mood (icon, mood_name) VALUES
-('/path/to/icon22.png', 'Excited'),
-('/path/to/icon23.png', 'Stressed'),
-('/path/to/icon24.png', 'Bored'),
-('/path/to/icon25.png', 'Content'),
-('/path/to/icon26.png', 'Grateful'),
-('/path/to/icon27.png', 'Angry'),
-('/path/to/icon28.png', 'Tired');
+('excited.jpeg', 'Excited'),
+('stressed.jpeg', 'Stressed'),
+('neutral.jpeg', 'Bored'),
+('relieved.jpeg', 'Content'),
+('grateful.jpeg', 'Grateful'),
+('angry.jpeg', 'Angry'),
+('tired.jpeg', 'Tired');
