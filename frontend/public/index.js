@@ -60,5 +60,34 @@ async function fetchActivityData() {
       });
     }
 
+async function fetchEmotionData() {
+  try {
+    const response = await fetch("http://localhost:3000/api/emotion");
+    const data = await response.json();
+    renderActivities(data);
+    } catch (error) {
+      console.error("Error fetching emotion data:", error);
+    }
+   }
+   function renderActivities(data) {
+    const emotionContainer = document.getElementById("emotionContainer");
+      data.forEach(emotion => {
+        const emotionDiv = document.createElement("div");
+
+        // Create an image element for the icon
+        const iconImg = document.createElement("img");
+        iconImg.src = `/Users/ina/Desktop/lighthouse/final/backend/src/public/images/${emotion.icon}`;
+        iconImg.alt = emotion.emotion_name;
+        emotionDiv.appendChild(iconImg);
+
+        // Display the emotion name
+        const emotionName = document.createElement("p");
+        emotionName.textContent = emotion.emotion_name;
+        emotionDiv.appendChild(emotionName);
+        emotionContainer.appendChild(emotionDiv);
+      });
+    }
+
     fetchSleepQualityData();
     fetchActivityData();
+    fetchEmotionData();
