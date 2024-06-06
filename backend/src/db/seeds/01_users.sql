@@ -1,10 +1,9 @@
 -- Users table seeds with password
 
-INSERT INTO User (user_id, username, email, password) VALUES
-(1, 'ina', 'ina@example.com', 'password123'),
-(2, 'chris', 'chris@example.com', 'password456');
-(3, 'arya', 'arya@example.com', 'password456');
-(4, 'luna', 'luna@example.com', 'password456');
-(5, 'kiyoshi', 'kiyoshi@example.com', 'password456');
-(6, 'julianne', 'julianne@example.com', 'password456');
-
+INSERT INTO "users" (username, email, password) VALUES
+('ina', 'ina@example.com', 'password123'),
+('chris', 'chris@example.com', 'password456'),
+('arya', 'arya@example.com', 'password456'),
+('luna', 'luna@example.com', 'password456'),
+('kiyoshi', 'kiyoshi@example.com', 'password456'),
+('julianne', 'julianne@example.com', 'password456');

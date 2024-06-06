@@ -3,18 +3,31 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Journal</title>
+    <title>My Journal - Homepage</title>
+    <link rel="stylesheet" href="../src/css/styles.css" />
   </head>
   <body>
-    <h1>Title</h1>
-    <div>
-      <p>Emotion</p>
+    <header>
+      <h1>My Journal</h1>
       <div>
-        <p>Food</p>
-        <p>Activities</p>
-        <p>Sleep Quality</p>
+        <a href="index.html">Home</a>
+        <a href="new-entry.html">Add New Entry</a>
       </div>
-      <label> Journal <input type="text" /></label>
-    </div>
+    </header>
+
+    <main>
+      <div>
+        <p>Emotion</p>
+        <div>
+          <p>Food</p>
+          <p>Activities</p>
+          <p>Sleep Quality</p>
+        </div>
+      </div>
+      <div id="entries-container">
+        <!-- Journal entries will be displayed here -->
+      </div>
+    </main>
+    <script src="../src/js/index.js"></script>
   </body>
 </html>

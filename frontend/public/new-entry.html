@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Journal - Add New Entry</title>
+    <link rel="stylesheet" href="../src/css/styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Add New Entry</h1>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="new-entry.html">Add New Entry</a>
+      </nav>
+    </header>
+    <main>
+      <h2>Daily Entry</h2>
+      <form id="entry-form">
+        <label for="journal-entry">Journal:</label>
+        <textarea id="journal-entry" name="journal-entry"></textarea>
+        <br />
+        <label for="photo">Upload Photo:</label>
+        <input type="file" id="photo" name="photo" />
+        <br />
+        <button type="submit">Submit</button>
+      </form>
+    </main>
+    <script src="../src/js/new-entry.js"></script>
+  </body>
+</html>
