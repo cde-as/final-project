@@ -7,5 +7,4 @@ CREATE TABLE entry_categories (
     mood_id INTEGER REFERENCES mood(mood_id),
     emotion_id INTEGER REFERENCES emotion(emotion_id),
     upload_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-
 );
