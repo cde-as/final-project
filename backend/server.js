@@ -39,6 +39,16 @@ app.get('/api/sleep_quality', async (req, res) => {
     }
 });
 
+app.get('/api/activities', async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM activities');
+        res.json(result.rows);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server error');
+    }
+});
+
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
