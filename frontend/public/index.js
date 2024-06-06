@@ -88,6 +88,35 @@ async function fetchEmotionData() {
       });
     }
 
+async function fetchFoodData() {
+  try {
+    const response = await fetch("http://localhost:3000/api/food");
+    const data = await response.json();
+    renderFood(data);
+    } catch (error) {
+      console.error("Error fetching foodata:", error);
+    }
+   }
+   function renderFood(data) {
+    const foodContainer = document.getElementById("foodContainer");
+      data.forEach(food => {
+        const foodDiv = document.createElement("div");
+
+        // Create an image element for the icon
+        const iconImg = document.createElement("img");
+        iconImg.src = `/Users/ina/Desktop/lighthouse/final/backend/src/public/images/${food.icon}`;
+        iconImg.alt = food.food_name;
+        foodDiv.appendChild(iconImg);
+
+        // Display the food name
+        const foodName = document.createElement("p");
+        foodName.textContent = food.food_name;
+        foodDiv.appendChild(foodName);
+        foodContainer.appendChild(foodDiv);
+      });
+    }
+
     fetchSleepQualityData();
     fetchActivityData();
     fetchEmotionData();
+    fetchFoodData();

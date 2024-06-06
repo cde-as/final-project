@@ -61,3 +61,13 @@ main {
 #sleepQualityContainer img{
   width: 50%;
 }
+
+#foodContainer {
+  display: inline-flex;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#foodContainer img {
+  width: 50%;
+}

@@ -59,6 +59,16 @@ app.get('/api/emotion', async (req, res) => {
     }
 });
 
+app.get('/api/food', async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM food');
+        res.json(result.rows);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server error');
+    }
+});
+
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
