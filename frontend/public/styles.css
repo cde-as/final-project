@@ -58,7 +58,7 @@ main {
   margin-right: auto;
 }
 
-#sleepQualityContainer img{
+#sleepQualityContainer img {
   width: 50%;
 }
 
@@ -70,4 +70,13 @@ main {
 
 #foodContainer img {
   width: 50%;
+}
+
+/* Styling for the images */
+#dailyEntriesContainer img {
+  max-width: 500px;
+  max-height: 500px;
+  margin: 5px;
+  border: 1px solid #ddd; /* Border to the image */
+  border-radius: 5px; /* Rounded corners to the image */
 }
