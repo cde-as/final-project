@@ -80,3 +80,15 @@ main {
   border: 1px solid #ddd; /* Border to the image */
   border-radius: 5px; /* Rounded corners to the image */
 }
+
+.entry-photo {
+  max-width: 250px;
+  max-height: 250px;
+  margin: 10px;
+  display: block;
+}
+
+input[type="file"] {
+  display: block; /* Ensures the file input is displayed as a block element */
+  margin: 10px 0; /* Adds some margin for better spacing */
+}

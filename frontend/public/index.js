@@ -21,9 +21,10 @@ function renderSleepQuality(data) {
 
     // Create an image element for the icon
     const iconImg = document.createElement("img");
+    /*    iconImg.src = `../backend/src/public/images/${sleepQuality.icon}`; */
+    /* iconImg.src = `../backend/src/public/images/${sleepQuality.icon}`; */
     /*  iconImg.src = `/Users/chrisdea/Desktop/final-project/backend/src/public/images/${sleepQuality.icon}`; */
-    iconImg.src = `/Users/chrisdea/Desktop/final-project/backend/src/public/images/${sleepQuality.icon}`;
-
+    iconImg.src = `/images/${sleepQuality.icon}`;
     iconImg.alt = sleepQuality.sleep_quality_name;
     sleepQualityDiv.appendChild(iconImg);
 
@@ -53,8 +54,8 @@ function renderActivities(data) {
 
     // Create an image element for the icon
     const iconImg = document.createElement("img");
-    iconImg.src = `/Users/chrisdea/Desktop/final-project/backend/src/public/images/${activity.icon}`;
-    //iconImg.src = `/images/${activity.icon}`;
+    /* iconImg.src = `/Users/chrisdea/Desktop/final-project/backend/src/public/images/${activity.icon}`; */
+    iconImg.src = `/images/${activity.icon}`;
     iconImg.alt = activity.activities_name;
     activityDiv.appendChild(iconImg);
 
@@ -68,9 +69,6 @@ function renderActivities(data) {
 
 async function fetchEmotionData() {
   try {
-    /* const response = await fetch(
-      "http://localhost:3000/api/emotion?user_id=${user_id}"
-    ); */
     const response = await fetch(
       `http://localhost:3000/api/emotion?user_id=${user_id}`
     );
@@ -87,7 +85,8 @@ function renderEmotion(data) {
 
     // Create an image element for the icon
     const iconImg = document.createElement("img");
-    iconImg.src = `/Users/chrisdea/Desktop/final-project/backend/src/public/images/${emotion.icon}`;
+    /* iconImg.src = `/Users/chrisdea/Desktop/final-project/backend/src/public/images/${emotion.icon}`; */
+    iconImg.src = `/images/${emotion.icon}`;
     iconImg.alt = emotion.emotion_name;
     emotionDiv.appendChild(iconImg);
 
@@ -118,7 +117,8 @@ function renderFood(data) {
 
     // Create an image element for the icon
     const iconImg = document.createElement("img");
-    iconImg.src = `/Users/chrisdea/Desktop/final-project/backend/src/public/images/${food.icon}`;
+    /*  iconImg.src = `/Users/chrisdea/Desktop/final-project/backend/src/public/images/${food.icon}`; */
+    iconImg.src = `/images/${food.icon}`;
     iconImg.alt = food.food_name;
     foodDiv.appendChild(iconImg);
 
@@ -132,6 +132,7 @@ function renderFood(data) {
 
 async function fetchDailyEntries() {
   try {
+    const userId = 1;
     const response = await fetch(
       `http://localhost:3000/api/daily_entry?user_id=${user_id}`
     );
@@ -162,15 +163,23 @@ function renderDailyEntries(data) {
     journalEntry.textContent = `Entry: ${entry.journal_entry}`;
     entryDiv.appendChild(journalEntry);
 
-    try {
-      const photos = JSON.parse(entry.photo_url);
+    if (entry.photo_url) {
+      let photos = [];
+      try {
+        // Try to parse photo_url as JSON
+        photos = JSON.parse(entry.photo_url);
+      } catch (e) {
+        // If parsing fails, treat photo_url as a single string
+        photos = [entry.photo_url];
+      }
       photos.forEach((photo) => {
         const photoImg = document.createElement("img");
-        photoImg.src = photo;
+        photoImg.src = photo.startsWith("http")
+          ? photo
+          : `http://localhost:3000${photo}`;
+        photoImg.classList.add("entry-photo");
         entryDiv.appendChild(photoImg);
       });
-    } catch (e) {
-      console.error("Error parsing photo URL:", e);
     }
 
     dailyEntriesContainer.appendChild(entryDiv);
