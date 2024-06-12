@@ -16,6 +16,8 @@ app.use(bodyParser.json());
 
 // Serve static files from the 'frontend/public' directory
 app.use(express.static(path.join(__dirname, "../frontend/public")));
+
+// Serve the images directory
 app.use(
   "/images",
   express.static(path.join(__dirname, "../backend/src/public/images"))
@@ -88,15 +90,27 @@ app.get("/api/activities", async (req, res) => {
   }
 });
 
+// New endpoint to fetch all emotions
+app.get("/api/emotions", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT * FROM emotion");
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+});
+
+// Existing endpoint to fetch emotions by user_id
 app.get("/api/emotion", async (req, res) => {
   const userId = req.query.user_id;
   try {
     const result = await pool.query(
       `
-      SELECT e.* FROM emotion e
-      JOIN entry_categories ec ON e.emotion_id = ec.emotion_id
-      JOIN daily_entry de ON ec.daily_entry_id = de.entry_id
-      WHERE de.user_id = $1`,
+        SELECT e.* FROM emotion e
+        JOIN entry_categories ec ON e.emotion_id = ec.emotion_id
+        JOIN daily_entry de ON ec.daily_entry_id = de.entry_id
+        WHERE de.user_id = $1`,
       [userId]
     );
     res.json(result.rows);
@@ -105,6 +119,26 @@ app.get("/api/emotion", async (req, res) => {
     res.status(500).send("Server error");
   }
 });
+
+// New endpoint to fetch entries along with emotions
+/* app.get("/api/index_data", async (req, res) => {
+  const userId = req.query.user_id; // Assuming you pass user_id as a query parameter
+  try {
+    const result = await pool.query(
+      `
+        SELECT de.entry_id, de.user_id, de.entry_date, de.journal_entry, de.photo_url, e.emotion_id, e.icon, e.emotion_name
+        FROM daily_entry de
+        JOIN entry_emotions ee ON de.entry_id = ee.entry_id
+        JOIN emotion e ON ee.emotion_id = e.emotion_id
+        WHERE de.user_id = $1`,
+      [userId]
+    );
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+}); */
 
 app.get("/api/food", async (req, res) => {
   const userId = req.query.user_id;
@@ -124,7 +158,7 @@ app.get("/api/food", async (req, res) => {
   }
 });
 
-app.get("/api/daily_entry", async (req, res) => {
+/* app.get("/api/daily_entry", async (req, res) => {
   const userId = req.query.user_id;
   console.log("Received request for user_id:", userId);
   try {
@@ -135,6 +169,85 @@ app.get("/api/daily_entry", async (req, res) => {
       [userId]
     );
     res.json(result.rows);
+  } catch (err) {
+    console.error("Database query error:", err.message);
+    res.status(500).send("Server error");
+  }
+}); */
+
+/* app.get("/api/daily_entry", async (req, res) => {
+  const userId = req.query.user_id;
+  console.log("Received request for user_id:", userId);
+  try {
+    const result = await pool.query(
+      `
+        SELECT de.*, ec.emotion_id
+        FROM daily_entry de
+        LEFT JOIN entry_categories ec ON de.entry_id = ec.daily_entry_id
+        WHERE de.user_id = $1`,
+      [userId]
+    );
+
+    // Group entries by entry_id and aggregate associated emotions
+    const entries = {};
+    result.rows.forEach((row) => {
+      const entryId = row.entry_id;
+      if (!entries[entryId]) {
+        entries[entryId] = {
+          entry_id: entryId,
+          user_id: row.user_id,
+          entry_date: row.entry_date,
+          journal_entry: row.journal_entry,
+          photo_url: row.photo_url,
+          emotions: [],
+        };
+      }
+      if (row.emotion_id) {
+        entries[entryId].emotions.push(row.emotion_id);
+      }
+    });
+
+    res.json(Object.values(entries));
+  } catch (err) {
+    console.error("Database query error:", err.message);
+    res.status(500).send("Server error");
+  }
+}); */
+
+app.get("/api/daily_entry", async (req, res) => {
+  const userId = req.query.user_id;
+  console.log("Received request for user_id:", userId);
+  try {
+    const result = await pool.query(
+      `
+          SELECT de.*, ec.emotion_id
+          FROM daily_entry de
+          LEFT JOIN entry_categories ec ON de.entry_id = ec.daily_entry_id
+          WHERE de.user_id = $1`,
+      [userId]
+    );
+
+    // Group entries by entry_id and collect emotion_ids for each entry
+    const entriesMap = new Map();
+    result.rows.forEach((row) => {
+      const { entry_id, emotion_id, ...entryData } = row;
+      if (!entriesMap.has(entry_id)) {
+        entriesMap.set(entry_id, {
+          ...entryData,
+          emotions: emotion_id ? [emotion_id] : [],
+        });
+      } else {
+        const entry = entriesMap.get(entry_id);
+        if (emotion_id) {
+          entry.emotions.push(emotion_id);
+        }
+      }
+    });
+
+    // Convert map values to array of entries
+    const entries = Array.from(entriesMap.values());
+
+    res.json(entries);
   } catch (err) {
     console.error("Database query error:", err.message);
     res.status(500).send("Server error");
@@ -163,17 +276,42 @@ const upload = multer({ storage });
 
 // Handle file upload and save entry
 app.post("/api/entry", upload.single("photo"), async (req, res) => {
-  const { journal_entry } = req.body;
+  const { journal_entry, emotion } = req.body;
   const photoPath = req.file ? `/uploads/${req.file.filename}` : null;
 
   try {
-    const result = await pool.query(
-      `
-        INSERT INTO daily_entry (user_id, entry_date, journal_entry, photo_url) 
-        VALUES ($1, NOW(), $2, $3) RETURNING *`,
-      [1, journal_entry, photoPath]
-    );
-    res.json(result.rows[0]);
+    const client = await pool.connect();
+    try {
+      await client.query("BEGIN");
+
+      // Insert into daily_entry table
+      const result = await client.query(
+        `
+            INSERT INTO daily_entry (user_id, entry_date, journal_entry, photo_url) 
+            VALUES ($1, NOW(), $2, $3) RETURNING entry_id`,
+        [1, journal_entry, photoPath]
+      );
+
+      const entryId = result.rows[0].entry_id;
+
+      // Insert into entry_categories table for each emotion ID
+      for (const emotionId of emotion) {
+        await client.query(
+          `
+      INSERT INTO entry_categories (daily_entry_id, emotion_id) 
+      VALUES ($1, $2)`,
+          [entryId, emotionId]
+        );
+      }
+
+      await client.query("COMMIT");
+      res.json(result.rows[0]);
+    } catch (e) {
+      await client.query("ROLLBACK");
+      throw e;
+    } finally {
+      client.release();
+    }
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");
