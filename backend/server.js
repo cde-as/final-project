@@ -1,18 +1,116 @@
+require("dotenv").config();
+
 const express = require("express");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const { Pool } = require("pg");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
+var cookieParser = require("cookie-parser");
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 4000;
+console.log("env: ", process.env.PORT);
 
 // Middleware
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(cookieParser());
+
+// PostgreSQL pool setup
+const pool = new Pool({
+  user: "chrisdea",
+  host: "localhost",
+  database: "final",
+  password: "mypass",
+  port: 5432,
+});
+
+// Load JWT secret key from environment variable
+const secretKey = process.env.JWT_SECRET;
+
+// Register Route
+app.post("/api/register", async (req, res) => {
+  const { email, username, password } = req.body;
+  // const hashedPassword = await bcrypt.hash(password, 10);
+
+  try {
+    const result = await pool.query(
+      "INSERT INTO users (email, username, password) VALUES ($1, $2, $3) RETURNING *",
+      [email, username, password]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    console.error("Error registering user:", error);
+    res.status(500).json({ error: "Error registering user" });
+  }
+});
+
+// Login Route
+app.post("/api/login", async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    const result = await pool.query("SELECT * FROM users WHERE username = $1", [
+      username,
+    ]);
+
+    console.log("Result", result.rows.length);
+    if (result.rows.length === 0) {
+      return res.status(400).json({ error: "Invalid username or password" });
+    }
+
+    const user = result.rows[0];
+    console.log("user: ", user);
+    /*  const isValidPassword = await bcrypt.compare(password, user.password);
+
+    if (!isValidPassword) {
+        console.log("Error invalid password:", error);
+      return res.status(400).json({ error: "Invalid username or password" });
+    } */
+
+    /*  const token = jwt.sign({ user_id: user.user_id }, secretKey, {
+      expiresIn: "1h",
+    }); */
+    const userId = user.user_id;
+    res.cookie("my-token", userId);
+    console.log("Server API Login", userId);
+    res.json({ userId });
+  } catch (error) {
+    console.error("Error logging in:", error);
+    res.status(500).json({ error: "Error logging in" });
+  }
+});
+
+// Middleware to protect routes
+const authenticateToken = (req, res, next) => {
+  const token = req.cookies[`my-token`];
+  console.log("cookie", token);
+  // const token = req.header("Authorization")?.split(" ")[1];
+
+  if (!token) {
+    return res.status(401).json({ error: "Access denied" });
+  }
+
+  try {
+    //const verified = jwt.verify(token, secretKey);
+    // req.user = verified;
+    // req.query.user_id = token;
+    next();
+  } catch (error) {
+    res.status(400).json({ error: "Invalid token" });
+  }
+};
+
+// Example of a protected route
+app.get("/", authenticateToken, (req, res) => {
+  //res.json({ message: "This is a protected route" });
+  res.sendFile(path.join(__dirname, "../frontend/public", "index.html"));
+});
 
 // Serve static files from the 'frontend/public' directory
 app.use(express.static(path.join(__dirname, "../frontend/public")));
@@ -33,15 +131,6 @@ app.use((req, res, next) => {
     "default-src 'self'; font-src 'self' data:"
   );
   next();
-});
-
-// PostgreSQL pool setup
-const pool = new Pool({
-  user: "chrisdea",
-  host: "localhost",
-  database: "final",
-  password: "mypass",
-  port: 5432,
 });
 
 // Test database connection
@@ -168,62 +257,6 @@ app.get("/api/food", async (req, res) => {
     res.status(500).send("Server error");
   }
 });
-
-/* app.get("/api/daily_entry", async (req, res) => {
-  const userId = req.query.user_id;
-  console.log("Received request for user_id:", userId);
-  try {
-    const result = await pool.query(
-      `
-        SELECT * FROM daily_entry
-        WHERE user_id = $1`,
-      [userId]
-    );
-    res.json(result.rows);
-  } catch (err) {
-    console.error("Database query error:", err.message);
-    res.status(500).send("Server error");
-  }
-}); */
-
-/* app.get("/api/daily_entry", async (req, res) => {
-  const userId = req.query.user_id;
-  console.log("Received request for user_id:", userId);
-  try {
-    const result = await pool.query(
-      `
-        SELECT de.*, ec.emotion_id
-        FROM daily_entry de
-        LEFT JOIN entry_categories ec ON de.entry_id = ec.daily_entry_id
-        WHERE de.user_id = $1`,
-      [userId]
-    );
-
-    // Group entries by entry_id and aggregate associated emotions
-    const entries = {};
-    result.rows.forEach((row) => {
-      const entryId = row.entry_id;
-      if (!entries[entryId]) {
-        entries[entryId] = {
-          entry_id: entryId,
-          user_id: row.user_id,
-          entry_date: row.entry_date,
-          journal_entry: row.journal_entry,
-          photo_url: row.photo_url,
-          emotions: [],
-        };
-      }
-      if (row.emotion_id) {
-        entries[entryId].emotions.push(row.emotion_id);
-      }
-    });
-
-    res.json(Object.values(entries));
-  } catch (err) {
-    console.error("Database query error:", err.message);
-    res.status(500).send("Server error");
-  }
-}); */
 
 app.get("/api/daily_entry", async (req, res) => {
   const userId = req.query.user_id;
