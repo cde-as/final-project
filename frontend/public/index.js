@@ -151,24 +151,69 @@ async function fetchDailyEntries() {
       }
 
       // Display associated emotions
-      if (entry.emotions && Array.isArray(entry.emotions)) {
+      /*  if (entry.emotions && Array.isArray(entry.emotions)) {
         const emotionsDiv = document.createElement("div");
         emotionsDiv.classList.add("emotions");
 
         // Filter emotions data for the current entry
         const entryEmotions = emotionsData.filter((emotion) =>
-          entry.emotions.includes(emotion.id)
+          entry.emotions.includes(emotion.emotion_id) //Have to double check property name
         );
 
         entryEmotions.forEach((emotion) => {
           const emotionSpan = document.createElement("span");
           emotionSpan.textContent = "Emotion: " + emotion.emotion_name;
           emotionsDiv.appendChild(emotionSpan);
+          const iconImg = document.createElement("img");
+          iconImg.src = `/images/${emotion.icon}`;
+          iconImg.alt =entryEmotions.emotion_name;
+          entryEmotions.appendChild(iconImg);
+
+          const entryEmotions = document.createElement("p");
+          sleepQualityName.textContent = .sleep_quality_name;
+          sleepQualityDiv.appendChild(sleepQualityName);
+
+          console.log("Emotions:", emotions);
+
+          entryDiv.appendChild(sleepQualityDiv);
         });
 
         entryDiv.appendChild(emotionsDiv);
       } else {
         console.warn("Entry does not contain emotions property:", entry);
+      } */
+
+      // Display associated EMOTIONS
+      if (entry.emotions && entry.emotions.length > 0) {
+        console.log("Emotion for Entry:", entry.emotions);
+
+        const entryEmotions = emotionsData.filter((emotion) =>
+          entry.emotions.includes(emotion.emotion_id)
+        );
+        console.log("Filtered Emotions for Entry:", entryEmotions);
+
+        const emotionsDiv = document.createElement("div");
+        emotionsDiv.classList.add("emotions");
+
+        entryEmotions.forEach((emotion) => {
+          // Create an emotion element
+          const emotionDiv = document.createElement("div");
+
+          // Create an image element for the icon
+          const iconImg = document.createElement("img");
+          iconImg.src = `/images/${emotion.icon}`;
+          iconImg.alt = emotion.emotion_name;
+          emotionDiv.appendChild(iconImg);
+
+          // Display the emotion name
+          const emotionName = document.createElement("p");
+          emotionName.textContent = emotion.emotion_name;
+          emotionDiv.appendChild(emotionName);
+
+          emotionsDiv.appendChild(emotionDiv);
+        });
+
+        entryDiv.appendChild(emotionsDiv);
       }
 
       // Display associated sleep quality if available
