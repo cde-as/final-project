@@ -54,6 +54,18 @@ pool.query("SELECT NOW()", (err, res) => {
 });
 
 // Example routes for API endpoints
+
+//API endpoint for new-entry.js
+app.get("/api/new_sleep_quality", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT * FROM sleep_quality");
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+});
+
 app.get("/api/sleep_quality", async (req, res) => {
   const userId = req.query.user_id;
   try {
@@ -65,6 +77,7 @@ app.get("/api/sleep_quality", async (req, res) => {
       WHERE de.user_id = $1`,
       [userId]
     );
+
     res.json(result.rows);
   } catch (err) {
     console.error(err.message);
@@ -72,17 +85,35 @@ app.get("/api/sleep_quality", async (req, res) => {
   }
 });
 
-app.get("/api/activities", async (req, res) => {
-  const userId = req.query.user_id;
+//API Activities endpoint for new-entry.js
+app.get("/api/new_activities", async (req, res) => {
   try {
-    const result = await pool.query(
-      `
-      SELECT a.* FROM activities a
-      JOIN entry_categories ec ON a.activities_id = ec.activities_id
-      JOIN daily_entry de ON ec.daily_entry_id = de.entry_id
-      WHERE de.user_id = $1`,
-      [userId]
-    );
+    const result = await pool.query("SELECT * FROM activities");
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+});
+
+// API endpoint to fetch activities
+app.get("/api/activities", async (req, res) => {
+  try {
+    const userId = req.query.user_id; // Fetch user_id from query parameters if provided
+
+    let query = "SELECT * FROM activities";
+    let params = [];
+
+    // If user_id is provided, filter activities by user_id
+    if (userId) {
+      query += `
+          JOIN entry_categories ec ON activities.activities_id = ec.activities_id
+          JOIN daily_entry de ON ec.daily_entry_id = de.entry_id
+          WHERE de.user_id = $1`;
+      params.push(userId);
+    }
+
+    const result = await pool.query(query, params);
     res.json(result.rows);
   } catch (err) {
     console.error(err.message);
@@ -119,26 +150,6 @@ app.get("/api/emotion", async (req, res) => {
     res.status(500).send("Server error");
   }
 });
-
-// New endpoint to fetch entries along with emotions
-/* app.get("/api/index_data", async (req, res) => {
-  const userId = req.query.user_id; // Assuming you pass user_id as a query parameter
-  try {
-    const result = await pool.query(
-      `
-        SELECT de.entry_id, de.user_id, de.entry_date, de.journal_entry, de.photo_url, e.emotion_id, e.icon, e.emotion_name
-        FROM daily_entry de
-        JOIN entry_emotions ee ON de.entry_id = ee.entry_id
-        JOIN emotion e ON ee.emotion_id = e.emotion_id
-        WHERE de.user_id = $1`,
-      [userId]
-    );
-    res.json(result.rows);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server error");
-  }
-}); */
 
 app.get("/api/food", async (req, res) => {
   const userId = req.query.user_id;
@@ -220,26 +231,49 @@ app.get("/api/daily_entry", async (req, res) => {
   try {
     const result = await pool.query(
       `
-          SELECT de.*, ec.emotion_id
-          FROM daily_entry de
-          LEFT JOIN entry_categories ec ON de.entry_id = ec.daily_entry_id
-          WHERE de.user_id = $1`,
+        SELECT 
+          de.entry_id,
+          de.user_id,
+          de.entry_date,
+          de.journal_entry,
+          de.photo_url,
+          ec.emotion_id,
+          ec.activities_id,
+          ec.sleep_quality_id
+        FROM daily_entry de
+        LEFT JOIN entry_categories ec ON de.entry_id = ec.daily_entry_id
+        WHERE de.user_id = $1
+      `,
       [userId]
     );
 
     // Group entries by entry_id and collect emotion_ids for each entry
     const entriesMap = new Map();
     result.rows.forEach((row) => {
-      const { entry_id, emotion_id, ...entryData } = row;
+      const {
+        entry_id,
+        emotion_id,
+        activity_id,
+        sleep_quality_id,
+        ...entryData
+      } = row;
       if (!entriesMap.has(entry_id)) {
         entriesMap.set(entry_id, {
           ...entryData,
           emotions: emotion_id ? [emotion_id] : [],
+          activities: activity_id ? [activity_id] : [],
+          sleepQuality: sleep_quality_id ? [sleep_quality_id] : [],
         });
       } else {
         const entry = entriesMap.get(entry_id);
         if (emotion_id) {
           entry.emotions.push(emotion_id);
+        }
+        if (activity_id) {
+          entry.activities.push(activity_id);
+        }
+        if (sleep_quality_id) {
+          entry.sleepQuality.push(sleep_quality_id);
         }
       }
     });
@@ -276,7 +310,7 @@ const upload = multer({ storage });
 
 // Handle file upload and save entry
 app.post("/api/entry", upload.single("photo"), async (req, res) => {
-  const { journal_entry, emotion } = req.body;
+  const { journal_entry, emotion, sleep_quality, activity } = req.body;
   const photoPath = req.file ? `/uploads/${req.file.filename}` : null;
 
   try {
@@ -287,9 +321,9 @@ app.post("/api/entry", upload.single("photo"), async (req, res) => {
       // Insert into daily_entry table
       const result = await client.query(
         `
-            INSERT INTO daily_entry (user_id, entry_date, journal_entry, photo_url) 
-            VALUES ($1, NOW(), $2, $3) RETURNING entry_id`,
-        [1, journal_entry, photoPath]
+            INSERT INTO daily_entry (user_id, entry_date, journal_entry, photo_url, sleep_quality_id) 
+            VALUES ($1, NOW(), $2, $3, $4) RETURNING entry_id`,
+        [1, journal_entry, photoPath, sleep_quality]
       );
 
       const entryId = result.rows[0].entry_id;
@@ -301,6 +335,16 @@ app.post("/api/entry", upload.single("photo"), async (req, res) => {
       INSERT INTO entry_categories (daily_entry_id, emotion_id) 
       VALUES ($1, $2)`,
           [entryId, emotionId]
+        );
+      }
+
+      // Insert into entry_activities table for each activity ID
+      for (const activityId of activity) {
+        await client.query(
+          `
+              INSERT INTO entry_categories (daily_entry_id, activity_id) 
+              VALUES ($1, $2)`,
+          [entryId, activityId]
         );
       }
 
