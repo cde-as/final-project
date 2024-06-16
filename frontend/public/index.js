@@ -218,7 +218,7 @@ async function fetchDailyEntries() {
 
           // Create an image element for the icon
           const iconImg = document.createElement("img");
-          iconImg.src = `/images/${activity.activities_icon}`;
+          iconImg.src = `/images/${activity.icon}`;
           iconImg.alt = activity.activities_name;
           activityDiv.appendChild(iconImg);
 

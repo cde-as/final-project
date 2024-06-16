@@ -253,7 +253,7 @@ app.get("/api/daily_entry", async (req, res) => {
       const {
         entry_id,
         emotion_id,
-        activity_id,
+        activities_id,
         sleep_quality_id,
         ...entryData
       } = row;
@@ -261,7 +261,7 @@ app.get("/api/daily_entry", async (req, res) => {
         entriesMap.set(entry_id, {
           ...entryData,
           emotions: emotion_id ? [emotion_id] : [],
-          activities: activity_id ? [activity_id] : [],
+          activities: activities_id ? [activities_id] : [],
           sleepQuality: sleep_quality_id ? [sleep_quality_id] : [],
         });
       } else {
@@ -269,8 +269,8 @@ app.get("/api/daily_entry", async (req, res) => {
         if (emotion_id) {
           entry.emotions.push(emotion_id);
         }
-        if (activity_id) {
-          entry.activities.push(activity_id);
+        if (activities_id) {
+          entry.activities.push(activities_id);
         }
         if (sleep_quality_id) {
           entry.sleepQuality.push(sleep_quality_id);
