@@ -93,7 +93,7 @@ document
     // Get selected sleep quality
     const selectedSleepQuality = document.getElementById("sleep-quality").value;
     formData.append("sleep_quality", selectedSleepQuality);
-    console.log("Selected sleep quality:", sleep_quality_id);
+    //console.log("Selected sleep quality:", sleep_quality_id);
 
     // Get selected activities
     const selectedActivities = Array.from(

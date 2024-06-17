@@ -292,6 +292,7 @@ app.get("/api/daily_entry", async (req, res) => {
       } = row;
       if (!entriesMap.has(entry_id)) {
         entriesMap.set(entry_id, {
+          entry_id, // Ensure entry_id is included
           ...entryData,
           emotions: emotion_id ? [emotion_id] : [],
           activities: activities_id ? [activities_id] : [],
@@ -354,9 +355,9 @@ app.post("/api/entry", upload.single("photo"), async (req, res) => {
       // Insert into daily_entry table
       const result = await client.query(
         `
-            INSERT INTO daily_entry (user_id, entry_date, journal_entry, photo_url, sleep_quality_id) 
-            VALUES ($1, NOW(), $2, $3, $4) RETURNING entry_id`,
-        [1, journal_entry, photoPath, sleep_quality]
+            INSERT INTO daily_entry (user_id, entry_date, journal_entry, photo_url) 
+            VALUES ($1, NOW(), $2, $3) RETURNING entry_id`,
+        [1, journal_entry, photoPath]
       );
 
       const entryId = result.rows[0].entry_id;
@@ -375,9 +376,18 @@ app.post("/api/entry", upload.single("photo"), async (req, res) => {
       for (const activityId of activity) {
         await client.query(
           `
-              INSERT INTO entry_categories (daily_entry_id, activity_id) 
+              INSERT INTO entry_categories (daily_entry_id, activities_id) 
               VALUES ($1, $2)`,
           [entryId, activityId]
+        );
+      }
+      // Insert into entry_activities table for each sleep quality ID
+      for (const sleepQualityId of sleep_quality) {
+        await client.query(
+          `
+              INSERT INTO entry_categories (daily_entry_id, sleep_quality_id) 
+              VALUES ($1, $2)`,
+          [entryId, sleepQualityId]
         );
       }
 
@@ -394,6 +404,126 @@ app.post("/api/entry", upload.single("photo"), async (req, res) => {
     res.status(500).send("Server error");
   }
 });
+
+// DELETE endpoint to delete a journal entry
+app.delete("/api/entry/:entryId", authenticateToken, async (req, res) => {
+  const entryId = req.params.entryId;
+  console.log("entryId server.js line:401", entryId);
+  const userId = req.cookies["my-token"];
+  console.log("userId, server.js line:403 ", userId);
+
+  if (!entryId) {
+    return res.status(400).json({ error: "Entry ID is required" });
+  }
+
+  try {
+    const client = await pool.connect();
+    try {
+      await client.query("BEGIN");
+
+      // Fetch the photo URL before deleting the entry
+      const photoResult = await client.query(
+        "SELECT photo_url FROM daily_entry WHERE entry_id = $1 AND user_id = $2",
+        [entryId, userId]
+      );
+
+      if (photoResult.rows.length === 0) {
+        return res
+          .status(404)
+          .json({ error: "Entry not found or unauthorized" });
+      }
+
+      const photoUrl = photoResult.rows[0].photo_url;
+
+      // Delete entry from entry_categories table
+      await client.query(
+        "DELETE FROM entry_categories WHERE daily_entry_id = $1",
+        [entryId]
+      );
+
+      // Delete entry from daily_entry table
+      await client.query(
+        "DELETE FROM daily_entry WHERE entry_id = $1 AND user_id = $2",
+        [entryId, userId]
+      );
+
+      await client.query("COMMIT");
+
+      // Remove the photo file from the uploads folder
+      if (photoUrl) {
+        const photoPath = path.join(
+          __dirname,
+          "../uploads",
+          path.basename(photoUrl)
+        );
+        fs.unlink(photoPath, (err) => {
+          if (err) {
+            console.error("Failed to delete photo:", err);
+          }
+        });
+      }
+
+      res.json({ message: "Entry deleted successfully" });
+    } catch (e) {
+      await client.query("ROLLBACK");
+      throw e;
+    } finally {
+      client.release();
+    }
+  } catch (err) {
+    console.error("Error deleting entry:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+/* app.delete("/api/entry/:entryId", async (req, res) => {
+  const entryId = req.params.entryId;
+  console.log("Received DELETE request for entry ID:", entryId);
+
+  try {
+    const client = await pool.connect();
+    await client.query("BEGIN");
+
+    // Fetch the photo URL to delete the file
+    const { rows } = await client.query(
+      "SELECT photo_url FROM daily_entry WHERE entry_id = $1",
+      [entryId]
+    );
+    const photoUrl = rows[0]?.photo_url;
+
+    // Delete entry from entry_categories table
+    await client.query(
+      "DELETE FROM entry_categories WHERE daily_entry_id = $1",
+      [entryId]
+    );
+
+    // Delete entry from daily_entry table
+    await client.query("DELETE FROM daily_entry WHERE entry_id = $1", [
+      entryId,
+    ]);
+
+    // Commit transaction
+    await client.query("COMMIT");
+    client.release();
+
+    // Delete the photo file if it exists
+    if (photoUrl) {
+      const filePath = path.join(
+        __dirname,
+        "../uploads",
+        path.basename(photoUrl)
+      );
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
+    }
+
+    res.status(200).json({ message: "Entry deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting entry:", error);
+    res.status(500).json({ error: "Error deleting entry" });
+  }
+}); */
 
 // Start the server
 app.listen(port, () => {

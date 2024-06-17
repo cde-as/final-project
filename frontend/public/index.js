@@ -114,8 +114,11 @@ async function fetchDailyEntries() {
     // Render each journal entry
     entries.forEach((entry) => {
       console.log("Processing entry:", entry);
+      console.log("Processing entry_id:", entry.entry_id);
       const entryDiv = document.createElement("div");
       entryDiv.classList.add("entry");
+      // Access entry_id from the entry object
+      const entryId = entry.entry_id;
 
       const entryDate = document.createElement("p");
       entryDate.textContent = `Date: ${new Date(
@@ -149,39 +152,6 @@ async function fetchDailyEntries() {
           entryDiv.appendChild(photoImg);
         });
       }
-
-      // Display associated emotions
-      /*  if (entry.emotions && Array.isArray(entry.emotions)) {
-        const emotionsDiv = document.createElement("div");
-        emotionsDiv.classList.add("emotions");
-
-        // Filter emotions data for the current entry
-        const entryEmotions = emotionsData.filter((emotion) =>
-          entry.emotions.includes(emotion.emotion_id) //Have to double check property name
-        );
-
-        entryEmotions.forEach((emotion) => {
-          const emotionSpan = document.createElement("span");
-          emotionSpan.textContent = "Emotion: " + emotion.emotion_name;
-          emotionsDiv.appendChild(emotionSpan);
-          const iconImg = document.createElement("img");
-          iconImg.src = `/images/${emotion.icon}`;
-          iconImg.alt =entryEmotions.emotion_name;
-          entryEmotions.appendChild(iconImg);
-
-          const entryEmotions = document.createElement("p");
-          sleepQualityName.textContent = .sleep_quality_name;
-          sleepQualityDiv.appendChild(sleepQualityName);
-
-          console.log("Emotions:", emotions);
-
-          entryDiv.appendChild(sleepQualityDiv);
-        });
-
-        entryDiv.appendChild(emotionsDiv);
-      } else {
-        console.warn("Entry does not contain emotions property:", entry);
-      } */
 
       // Display associated EMOTIONS
       if (entry.emotions && entry.emotions.length > 0) {
@@ -277,12 +247,42 @@ async function fetchDailyEntries() {
 
         entryDiv.appendChild(activitiesDiv);
       }
+      // Create delete button
+      const deleteButton = document.createElement("button");
+      deleteButton.textContent = "Delete";
+      deleteButton.setAttribute("entry_id", entry.entry_id); // Set entry_id as attribute
+      console.log("Add entry_id to delete button", entry.entry_id);
+      deleteButton.addEventListener("click", async () => {
+        const entryId = deleteButton.getAttribute("entry_id"); // Retrieve entry_id from the button
+        console.log("Deleting entry with ID:", entryId); // Debug log
+        await deleteEntry(entryId); // Call deleteEntry function with entry_id
+      });
+      entryDiv.appendChild(deleteButton);
 
       // Append the entry to the container
       entriesContainer.appendChild(entryDiv);
     });
   } catch (error) {
     console.error("Error fetching entries:", error);
+  }
+}
+
+async function deleteEntry(entryId) {
+  console.log("deleteEntry called with ID:", entryId); // Debug log
+  try {
+    const response = await fetch(`/api/entry/${entryId}`, {
+      method: "DELETE",
+    });
+
+    if (response.ok) {
+      alert("Entry deleted successfully");
+      fetchDailyEntries(); // Refresh the entries
+    } else {
+      alert("Failed to delete entry");
+    }
+  } catch (error) {
+    console.error("Error deleting entry:", error);
+    alert("Error deleting entry");
   }
 }
 
