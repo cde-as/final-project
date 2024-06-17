@@ -4,9 +4,18 @@ body {
   padding: 0;
 }
 
+#moodtracks {
+  background-color:#D1E7F2;
+  font-family: "Playwrite IS", cursive;
+}
+
+#new-entry {
+  background-color: #D1E7F2;
+}
+
 header {
-  background-color: #333;
-  color: #fff;
+  background-color: #D1E7F2;
+  color: black;
   padding: 1em;
   text-align: center;
 }
@@ -18,6 +27,12 @@ nav a {
 }
 
 main {
+  background-image: url(./images/blue_mt.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: block;
+  width: 100vw;
+  height: 100vh;
   padding: 2em;
 }
 
