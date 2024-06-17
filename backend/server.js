@@ -23,7 +23,7 @@ app.use(cookieParser());
 
 // PostgreSQL pool setup
 const pool = new Pool({
-  user: "ina",
+  user: "chrisdea",
   host: "localhost",
   database: "final",
   password: "mypass",

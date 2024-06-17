@@ -53,7 +53,9 @@
                     <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click to upload</span> or drag and drop</p>
                     <p class="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
                 </div>
-                <input id="dropzone-file" type="file" class="hidden"/>
+               <!--  <input id="dropzone-file" type="file" class="hidden"/> -->
+              
+                <input id="photo" type="file" class="hidden"/>
             </label>
         </div> 
         <br />
@@ -62,10 +64,10 @@
         <label for="emotions">How Are You Feeling?</label>
         <!-- <select name="emotions" id="emotions" multiple></select> -->
 
-        <form class="max-w-sm mx-auto">
+        <div class="max-w-sm mx-auto">
           <select name="emotions" id="emotions" multiple class="bg-blue-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-blue-200 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
           </select>
-        </form>
+        </div>
 
         <br />
         <!-- <label for="sleep-quality">Select Sleep Quality:</label> -->
@@ -75,10 +77,10 @@
         <label for="sleep-quality">How Was Your Sleep?</label>
         <!-- <select name="emotions" id="emotions" multiple></select> -->
 
-        <form class="max-w-sm">
+        <div class="max-w-sm">
           <select name="sleep-quality" id="sleep-quality" multiple class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
           </select>
-        </form>
+        </div>
 
         <br />
         <!-- <label for="activities">Activities:</label>
@@ -88,10 +90,10 @@
         <label for="activities">Activities:</label>
         <!-- <select name="emotions" id="emotions" multiple></select> -->
 
-        <form class="max-w-sm">
+        <div class="max-w-sm">
           <select name="activities" id="activities" multiple class="bg-sky-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-sky-300 dark:border-sky-600 dark:placeholder-sky-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500">
           </select>
-        </form>
+        </div>
 
         <br />
         <button type="submit" class="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800">
