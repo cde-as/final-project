@@ -47,6 +47,15 @@ main {
   padding: 1em;
 }
 
+/* Hide Choose File Button */
+::-webkit-file-upload-button {
+  display: none;
+}
+
+form.max-w-sm {
+  max-width: inherit;
+}
+
 #emotionContainer {
   display: inline-flex;
   margin-left: auto;
