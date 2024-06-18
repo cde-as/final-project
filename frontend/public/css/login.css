@@ -1,0 +1,64 @@
+body {
+  margin: 0;
+  padding: 0;
+  /* font-family: Arial, sans-serif; */
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Background Faded Effect */
+body::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url("../images/landscape-background.jpg") no-repeat center center fixed;
+  background-size: cover;
+  opacity: 0.8;
+  /* Adjust the opacity */
+  z-index: -1;
+}
+
+.form-container {
+  max-width: 500px;
+  margin: auto;
+  padding: 20px;
+}
+
+#login-container {
+  background: rgba(52, 46, 46, 0.8);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#login-form {
+  display: flex;
+  flex-direction: column;
+}
+
+#login-form input {
+  margin-bottom: 10px;
+  padding: 10px;
+  font-size: 16px;
+}
+
+#login-form button {
+  padding: 10px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#login-form button:hover {
+  background-color: #0056b3;
+}
