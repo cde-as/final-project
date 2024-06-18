@@ -30,6 +30,7 @@ main {
   background-image: url(./images/blue_mt.jpg);
   background-repeat: no-repeat;
   background-size: cover;
+  background-attachment:scroll;
   display: block;
   width: 100vw;
   height: 100vh;
@@ -55,6 +56,21 @@ main {
 form.max-w-sm {
   max-width: inherit;
 }
+
+
+.entry button{
+  background-color: aqua;
+}
+
+div.emotions img {
+  max-width: 50%;
+}
+
+.entry {
+  display: flex;
+  justify-content: space-between;
+}
+
 
 #emotionContainer {
   display: inline-flex;

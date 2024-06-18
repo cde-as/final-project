@@ -37,6 +37,8 @@ app.post("/api/register", async (req, res) => {
   const { email, username, password } = req.body;
   // const hashedPassword = await bcrypt.hash(password, 10);
 
+  console.log("hello register");
+  
   try {
     const result = await pool.query(
       "INSERT INTO users (email, username, password) VALUES ($1, $2, $3) RETURNING *",

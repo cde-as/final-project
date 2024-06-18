@@ -246,7 +246,7 @@
         <label
           for="journal-entry"
           class="block mb-2 text-sm font-medium text-gray-900 dark:text-black"
-          >Your message</label
+          >Your Journal Entry</label
         >
         <textarea
           id="journal-entry"
@@ -268,7 +268,7 @@
             for="dropzone-file"
             class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-cyan-100 dark:hover:bg-bray-800 dark:bg-cyan-100 hover:bg-cyan-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-cyan-600"
           >
-            <div class="flex flex-col items-center justify-center pt-5 pb-6">
+            <div class="flex flex-col items-center justify-center pt-5 pb-6" id="dropzone-file">
               <svg
                 class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
                 aria-hidden="true"
@@ -285,7 +285,7 @@
                 />
               </svg>
               <p class="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                <span class="font-semibold">Click to upload</span> or drag and
+                <span class="font-semibold" id="dropzone-file" >Click to upload</span> or drag and
                 drop
               </p>
               <p class="text-xs text-gray-500 dark:text-gray-400">
@@ -294,7 +294,7 @@
             </div>
             <!--  <input id="dropzone-file" type="file" class="hidden"/> -->
 
-            <input id="photo" type="file" class="hidden" />
+            <input id="photo" type="file" class="hidden" name="photo" accept="image/*" />
           </label>
         </div>
         <br />

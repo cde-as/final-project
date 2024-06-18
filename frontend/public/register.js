@@ -7,6 +7,8 @@ document
     const username = document.getElementById("username").value;
     const password = document.getElementById("password").value;
 
+    console.log(email, username,password )
+    
     try {
       const response = await fetch("http://localhost:3000/api/register", {
         method: "POST",
@@ -15,6 +17,8 @@ document
         },
         body: JSON.stringify({ email, username, password }),
       });
+
+      console.log(response);
 
       if (!response.ok) {
         throw new Error("Registration failed");
