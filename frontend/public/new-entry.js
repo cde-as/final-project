@@ -112,6 +112,7 @@ document
 
       if (response.ok) {
       // Entry submitted successfully, redirect to index.html
+
       window.location.href = "/index.html";
     } else {
       // Handle other status codes (e.g., 4xx, 5xx)
