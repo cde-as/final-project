@@ -57,6 +57,23 @@ form.max-w-sm {
   max-width: inherit;
 }
 
+#entries-container {
+  box-sizing: border-box;
+}
+
+.entry>div {
+  border-radius: 5px;
+  background-color: rgb(207 232 220);
+  padding: 1em;
+ 
+}
+
+.entry {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 100px 100px;
+  gap: 10px;
+}
 
 .entry button{
   background-color: rgb(0, 132, 255);
@@ -66,8 +83,19 @@ form.max-w-sm {
   max-height: 15%;
 }
 
+div.emotions {
+  max-width: 50%;
+  grid-column: 2 / 4;
+  grid-row: 1;
+}
+
 div.emotions img {
   max-width: 50%;
+}
+
+div.activities {
+  grid-column: 1;
+  grid-row: 1 / 3;
 }
 
 div.activities img {
