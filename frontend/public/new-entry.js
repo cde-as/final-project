@@ -109,9 +109,20 @@ document
         method: "POST",
         body: formData,
       });
-      const data = await response.json();
-      console.log("Entry submitted:", data);
-    } catch (error) {
-      console.error("Error submitting entry:", error);
+
+      if (response.ok) {
+      // Entry submitted successfully, redirect to index.html
+      window.location.href = "/index.html";
+    } else {
+      // Handle other status codes (e.g., 4xx, 5xx)
+      console.error("Failed to submit entry:", response.statusText);
     }
-  });s
+  } catch (error) {
+    console.error("Error submitting entry:", error);
+  }
+    //   const data = await response.json();
+    //   console.log("Entry submitted:", data);
+    // } catch (error) {
+    //   console.error("Error submitting entry:", error);
+    // }
+  });
