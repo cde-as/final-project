@@ -176,7 +176,7 @@ async function fetchDailyEntries() {
           emotionDiv.appendChild(iconImg);
 
           // Display the emotion name
-          const emotionName = document.createElement("p");
+          const emotionName = document.createElement("p-emotion");
           emotionName.textContent = emotion.emotion_name;
           emotionDiv.appendChild(emotionName);
 
@@ -204,7 +204,7 @@ async function fetchDailyEntries() {
           iconImg.alt = sleepQualityEntry.sleep_quality_name;
           sleepQualityDiv.appendChild(iconImg);
 
-          const sleepQualityName = document.createElement("p");
+          const sleepQualityName = document.createElement("p-sleep");
           sleepQualityName.textContent = sleepQualityEntry.sleep_quality_name;
           sleepQualityDiv.appendChild(sleepQualityName);
 
@@ -238,7 +238,7 @@ async function fetchDailyEntries() {
           activityDiv.appendChild(iconImg);
 
           // Display the activity name
-          const activityName = document.createElement("p");
+          const activityName = document.createElement("p-activity");
           activityName.textContent = activity.activities_name;
           activityDiv.appendChild(activityName);
 

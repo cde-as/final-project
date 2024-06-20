@@ -121,9 +121,4 @@ document
   } catch (error) {
     console.error("Error submitting entry:", error);
   }
-    //   const data = await response.json();
-    //   console.log("Entry submitted:", data);
-    // } catch (error) {
-    //   console.error("Error submitting entry:", error);
-    // }
   });

@@ -94,7 +94,7 @@
                 <!-- Sign Out -->
                 <li>
                   <a
-                    href="#"
+                    href="login.html"
                     class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
                   >
                     <svg
@@ -131,12 +131,13 @@
 
 
       <form id="entry-form" enctype="multipart/form-data">
-
+      <div id="title">New Journal Entry</div>
+      <br />
         <!-- New Entry - Message -->
         <label
           for="journal-entry"
-          class="block mb-2 text-sm font-medium text-gray-900 dark:text-black"
-          >Your Journal Entry</label
+          class="block mb-2 text-sm font-light text-gray-900 dark:text-black"
+          >My Journal Entry</label
         >
         <textarea
           id="journal-entry"
@@ -153,7 +154,7 @@
         <div class="flex items-center justify-center w-full">
           <label
             for="dropzone-file"
-            class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-cyan-100 dark:hover:bg-bray-800 dark:bg-cyan-100 hover:bg-cyan-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-cyan-600"
+            class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-blue-300 dark:hover:bg-blue-200 dark:bg-gray-700 hover:bg-blue-200 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-blue-200"
           >
             <div class="flex flex-col items-center justify-center pt-5 pb-6" id="dropzone-file">
               <svg
@@ -181,7 +182,7 @@
             </div>
             <!--  <input id="dropzone-file" type="file" class="hidden"/> -->
 
-            <input id="photo" type="file" class="hidden" name="photo" accept="image/*" />
+            <input id="photo" type="file" name="photo" accept="image/*" />
           </label>
         </div>
         <br />
@@ -194,7 +195,7 @@
             name="emotions"
             id="emotions"
             multiple
-            class="bg-blue-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-blue-200 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            class="bg-blue-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-blue-200 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500"
           ></select>
         </div>
 
@@ -222,7 +223,7 @@
             name="activities"
             id="activities"
             multiple
-            class="bg-sky-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-sky-300 dark:border-sky-600 dark:placeholder-sky-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            class="bg-sky-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-600 block w-full p-2.5 dark:bg-blue-200 dark:border-sky-600 dark:placeholder-sky-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500"
           ></select>
         </div>
 
