@@ -30,11 +30,7 @@ main {
   background-image: url(./images/blue_mt.jpg);
   background-repeat: no-repeat;
   background-size: cover;
-  background-attachment:scroll;
-  display: block;
-  width: 100vw;
-  height: 100vh;
-  padding: 2em;
+  background-attachment: fixed;
 }
 
 #entries {
@@ -73,6 +69,8 @@ form.max-w-sm {
   grid-template-columns: 1fr 1fr 1fr;
   grid-template-rows: 100px 100px;
   gap: 10px;
+  align-items: center;
+  align-content: space-around;
 }
 
 .entry button{
@@ -83,10 +81,10 @@ form.max-w-sm {
   max-height: 15%;
 }
 
-div.emotions {
-  max-width: 50%;
-  grid-column: 2 / 4;
-  grid-row: 1;
+.entry div.emotions {
+  max-width: 90%;
+  grid-column: 2 / 7;
+  grid-row: 2;
 }
 
 div.emotions img {
