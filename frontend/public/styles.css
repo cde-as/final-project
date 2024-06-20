@@ -26,12 +26,25 @@ nav a {
   text-decoration: none;
 }
 
+.main-new-entry {
+  background-image: url(./images/blue_mt.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: scroll;
+  display: block;
+  width: 100vw;
+  height: 100vh;
+  padding: 2em;
+}
+
 main {
   background-image: url(./images/blue_mt.jpg);
   background-repeat: no-repeat;
   background-size: cover;
   background-attachment: fixed;
 }
+
+
 
 #entries {
   display: flex;
