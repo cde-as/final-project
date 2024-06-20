@@ -30,11 +30,11 @@ nav a {
   background-image: url(./images/blue_mt.jpg);
   background-repeat: no-repeat;
   background-size: cover;
-  background-attachment: scroll;
+  background-attachment: fixed;
   display: block;
-  width: 100vw;
+  /* width: 100vw;
   height: 100vh;
-  padding: 2em;
+  padding: 2em; */
 }
 
 main {
@@ -43,7 +43,6 @@ main {
   background-size: cover;
   background-attachment: fixed;
 }
-
 
 
 #entries {
