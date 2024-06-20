@@ -120,7 +120,7 @@ async function fetchDailyEntries() {
       // Access entry_id from the entry object
       const entryId = entry.entry_id;
 
-      const entryDate = document.createElement("p");
+      const entryDate = document.createElement("p-date");
       entryDate.textContent = `Date: ${new Date(
         entry.entry_date
       ).toLocaleDateString()}`;
